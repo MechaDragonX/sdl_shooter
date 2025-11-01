@@ -3,14 +3,27 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
 
+// Window dimensions
+#define WINDOW_WIDTH 500
+#define WINDOW_HEIGHT 500
+#define FRAME_CAP 60
+
+// Set up game controller
+void setGameController(SDL_GameController* controller)
+{
+    if(SDL_NumJoysticks() > 0)
+    {
+        controller = SDL_GameControllerOpen(0);
+        SDL_Log("Controller type %d found!", SDL_GameControllerGetType(controller));
+    }
+    else
+    {
+        SDL_Log("No controllers found!");
+    }
+}
+
 int main(int argc, char* argv[])
 {
-    // Window dimensions
-    const int WINDOW_WIDTH = 500;
-    const int WINDOW_HEIGHT = 500;
-
-    const int FRAME_CAP = 60;
-    
     // Return zero for success and vice versa
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
@@ -34,7 +47,7 @@ int main(int argc, char* argv[])
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
 
     // Create surface to load image into memory
-    SDL_Surface* surface = NULL;
+    SDL_Surface* surface;
     // Load image
     surface = IMG_Load("assets/jack.png");
 
@@ -63,15 +76,7 @@ int main(int argc, char* argv[])
 
     // Set up game controller
     SDL_GameController* controller;
-    if(SDL_NumJoysticks() > 0)
-    {
-        controller = SDL_GameControllerOpen(0);
-        SDL_Log("Controller type %d found!", SDL_GameControllerGetType(controller));
-    }
-    else
-    {
-        SDL_Log("No controllers found!");
-    }
+    setGameController(controller);
 
     // Looping var
     int looping = 1;
