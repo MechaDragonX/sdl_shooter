@@ -4,15 +4,15 @@ LDLIBS := -lm $(shell sdl2-config --libs) $(shell pkg-config --libs SDL2_image)
 
 TARGET :=
 ifeq ($(OS),Windows_NT)
-	TARGET+=test.exe
+	TARGET+=shooter.exe
 else
-	TARGET+=test
+	TARGET+=shooter
 endif
 
 BINDIR = bin
 
 $(TARGET):
-	$(CC) $(CFLAGS) src/test.c -o $(BINDIR)/$@ $(LDLIBS)
+	$(CC) $(CFLAGS) src/main.c -o $(BINDIR)/$@ $(LDLIBS)
 
 setup:
 	mkdir -p $(BINDIR)
