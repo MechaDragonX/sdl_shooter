@@ -39,7 +39,7 @@ SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer)
     return texture;
 }
 
-// Params: Pointer to SDL_GameController
+// Params: Pointer to pointer to SDL_GameController
 // Set up game controller
 // Returns: void
 void setGameController(SDL_GameController** controller)
@@ -52,6 +52,72 @@ void setGameController(SDL_GameController** controller)
     else
     {
         SDL_Log("No controllers found!");
+    }
+}
+
+
+// Params: Pointer to distance as 2D vector
+// Use keyboard controls to get raw distance vector before finalization
+// Returns: void
+void getRawDistanceKeyboard(Vector2* distance)
+{
+    // Get array of keys with their states
+    const Uint8* key_states = SDL_GetKeyboardState(NULL);
+
+    // Assign vector values based on keys pressed
+    if(key_states[SDL_SCANCODE_W] || key_states[SDL_SCANCODE_UP])
+        distance->y -= 1;
+    if(key_states[SDL_SCANCODE_S] || key_states[SDL_SCANCODE_DOWN])
+        distance->y += 1;
+    if(key_states[SDL_SCANCODE_A] || key_states[SDL_SCANCODE_LEFT])
+        distance->x -= 1;
+    if(key_states[SDL_SCANCODE_D] || key_states[SDL_SCANCODE_RIGHT])
+        distance->x += 1;
+}
+
+// Params: Pointer to pointer to SDL_GameController, Pointer to distance as 2D vector
+// Use game controller controls to get raw distance vector before finalization
+// Returns: void
+void getRawDistanceController(SDL_GameController** controller, Vector2* distance)
+{
+    // Assign vector values based on DPad directions pressed
+    if(SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_UP))
+        distance->y -= 1;
+    if(SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN))
+        distance->y += 1;
+    if(SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT))
+        distance->x -= 1;
+    if(SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT))
+        distance->x += 1;
+}
+
+Vector2 getRawDistance(SDL_GameController** controller)
+{
+    Vector2 distance = {0, 0};
+
+    // Check if there are no controllers
+    if(SDL_NumJoysticks() == 0)
+    {
+        // If so handle keyboard input
+        getRawDistanceKeyboard(&distance);
+    }
+    else
+    {
+        // Otherwise handle controller input
+        getRawDistanceController(controller, &distance);
+    }
+
+    return distance;
+}
+
+void normalizeDistance(Vector2* distance)
+{
+    // Normalize vectors so diagonal is at same speed as cardinal
+    float normalized_diagonal = sqrtf((distance->x * distance->x) + (distance->y * distance->y));
+    if(normalized_diagonal != 0)
+    {
+        distance->x /= normalized_diagonal;
+        distance->y /= normalized_diagonal;
     }
 }
 
@@ -94,14 +160,6 @@ int main(int argc, char* argv[])
     player.rectangle.x = (WINDOW_WIDTH - player.rectangle.w) / 2;
     player.rectangle.y = (WINDOW_HEIGHT - player.rectangle.h) / 2;
 
-    // Array of keys with their states
-    const Uint8* key_states;
-
-    // Raw distance
-    Vector2 distance = {0, 0};
-    // Final distance
-    float final_distance = 0;
-
     // Set up game controller
     SDL_GameController* controller;
     setGameController(&controller);
@@ -118,46 +176,10 @@ int main(int argc, char* argv[])
                 looping = 0;
         }
 
-        // Reset vectors
-        distance = (Vector2){0, 0};
-
-        // Check if there are no controllers
-        if(SDL_NumJoysticks() == 0)
-        {
-            // If so handle keyboard input
-            // Get array of keys with their states
-            key_states = SDL_GetKeyboardState(NULL);
-            // Assign vector values based on keys pressed
-            if(key_states[SDL_SCANCODE_W] || key_states[SDL_SCANCODE_UP])
-                distance.y -= 1;
-            if(key_states[SDL_SCANCODE_S] || key_states[SDL_SCANCODE_DOWN])
-                distance.y += 1;
-            if(key_states[SDL_SCANCODE_A] || key_states[SDL_SCANCODE_LEFT])
-                distance.x -= 1;
-            if(key_states[SDL_SCANCODE_D] || key_states[SDL_SCANCODE_RIGHT])
-                distance.x += 1;
-        }
-        else
-        {
-            // Otherwise handle controller input
-            // Assign vector values based on DPad directions pressed
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP))
-                distance.y -= 1;
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN))
-                distance.y += 1;
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT))
-                distance.x -= 1;
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT))
-                distance.x += 1;
-        }
-
+        // Calculate raw distance
+        Vector2 distance = getRawDistance(&controller);
         // Normalize vectors so diagonal is at same speed as cardinal
-        final_distance = sqrtf((distance.x * distance.x) + (distance.y * distance.y));
-        if(final_distance != 0)
-        {
-            distance.x /= final_distance;
-            distance.y /= final_distance;
-        }
+        normalizeDistance(&distance);
 
         // Set new sprite position
         player.rectangle.x += distance.x * player.speed.x / FRAME_CAP;
