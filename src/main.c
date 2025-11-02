@@ -82,19 +82,6 @@ Vector2 getRawDistance(SDL_GameController** controller)
     return distance;
 }
 
-// Params: Vector2 distance
-// Normalize vectors so diagonal is at same speed as cardinal
-// Returns: void
-void normalizeDistance(Vector2* distance)
-{
-    float normalizedDiagonal = sqrtf((distance->x * distance->x) + (distance->y * distance->y));
-    if(normalizedDiagonal != 0)
-    {
-        distance->x /= normalizedDiagonal;
-        distance->y /= normalizedDiagonal;
-    }
-}
-
 
 // === Main Function ===
 int main(int argc, char* argv[])
@@ -121,7 +108,13 @@ int main(int argc, char* argv[])
     // Create renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
 
-    Entity player = setupEntity("assets/jack.png", renderer, (Vector2){0, 0}, (Vector2){300, 300});
+    Entity player = setupEntity
+    (
+        "assets/jack.png",
+        renderer,
+        (Vector2){0, 0},
+        (Vector2){300, 300}
+    );
 
     // Set up game controller
     SDL_GameController* controller;
@@ -146,7 +139,6 @@ int main(int argc, char* argv[])
 
         // Set new sprite position
         updateEntityPosition(&player, &distance);
-
         // Handle Bounds
         normalizeEntityPositionBounds(&player);
 
