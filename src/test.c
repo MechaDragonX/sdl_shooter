@@ -8,13 +8,24 @@
 #define WINDOW_HEIGHT 500
 #define FRAME_CAP 60
 
+
+// Create surface, load image to surface, create texture, free surface
+SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer)
+{
+    SDL_Surface* surface = IMG_Load(path);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+
+    return texture;
+}
+
 // Set up game controller
-void setGameController(SDL_GameController* controller)
+void setGameController(SDL_GameController** controller)
 {
     if(SDL_NumJoysticks() > 0)
     {
-        controller = SDL_GameControllerOpen(0);
-        SDL_Log("Controller type %d found!", SDL_GameControllerGetType(controller));
+        * controller = SDL_GameControllerOpen(0);
+        SDL_Log("Controller type %d found!", SDL_GameControllerGetType(* controller));
     }
     else
     {
@@ -46,15 +57,7 @@ int main(int argc, char* argv[])
     // Create renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
 
-    // Create surface to load image into memory
-    SDL_Surface* surface;
-    // Load image
-    surface = IMG_Load("assets/jack.png");
-
-    // Create texture from image
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    // Free the memory
-    SDL_FreeSurface(surface);
+    SDL_Texture* texture = createTexture("assets/jack.png", renderer);
     // Create a rectangle sprite to put the texture on
     SDL_Rect sprite;
     SDL_QueryTexture(texture, NULL, NULL, &sprite.w, &sprite.h);
@@ -76,7 +79,7 @@ int main(int argc, char* argv[])
 
     // Set up game controller
     SDL_GameController* controller;
-    setGameController(controller);
+    setGameController(&controller);
 
     // Looping var
     int looping = 1;
