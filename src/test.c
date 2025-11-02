@@ -2,23 +2,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
+#include "entity.h"
 #include "macros.h"
 #include "vector2.h"
-
-// === STRUCTS ===
-// typedef struct
-// {
-//     float x;
-//     float y;
-// } Vector2;
-
-typedef struct
-{
-    SDL_Texture* texture;
-    SDL_Rect rectangle;
-    Vector2 position;
-    Vector2 speed;
-} Entity;
 
 
 // === FUNCTIONS ===
