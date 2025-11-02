@@ -2,13 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
-
-// === MACROS ===
-// Window dimensions
-#define WINDOW_WIDTH 500
-#define WINDOW_HEIGHT 500
-#define FRAME_CAP 60
-
+#include "macros.h"
 
 // === STRUCTS ===
 typedef struct

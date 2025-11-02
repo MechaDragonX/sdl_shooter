@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS := -std=c11 $(shell sdl2-config --cflags) $(shell pkg-config --cflags SDL2_image)
+CFLAGS := -std=c11 -Iinclude $(shell sdl2-config --cflags) $(shell pkg-config --cflags SDL2_image)
 LDLIBS := -lm $(shell sdl2-config --libs) $(shell pkg-config --libs SDL2_image)
 
 TARGET :=
