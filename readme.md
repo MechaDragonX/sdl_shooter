@@ -16,6 +16,7 @@
 
 ## PC Compilation Information
 ### Prerequisites
+#### Packages
 - SDL2
     - Linux:
         - Debian: `libsdl2-dev`
@@ -34,35 +35,49 @@
         - MSYS2: `<package prefix>-x86_64-SDL2_image`
     - macOS:
         - Homebrew: `sdl2_image`
-
-#### Other Important Info
+#### Information
 - Uses GCC compiler on all platforms
 - **Untested on macOS**
 - **Untested on ARM (AArch64)**
 
 ### Compilation Instructions
 1. ```
-    make setup
-    ```
+   make setup
+   ```
 2. ```
-    make
-    ```
+   make
+   ```
 3. On Unix:
-    ```
-    ./bin/shooter
-    ```
-    On Windows:
-    ```
-    ./bin/shooter.exe
-    ```
+   ```
+   ./bin/shooter
+   ```
+   On Windows:
+   ```
+   ./bin/shooter.exe
+   ```
+   Naturally doubleclicking the executable now should work too (assuming permissions are in order).
 
+### Other Commands
+- ```
+  make clean
+  ```
+  Remove all compiled object files and executable
 
 ## How to Play
 - There's barely a game currently
 - All you can do is move a sprite around
     - Keyboard: WASD and ↑↓←→
     - Controller: DPad
-        - Supported controllers: Most modern controllers including
+        - Supported controllers: All modern controllers including
             - Xbox 360, One, Series X
-            - DualShock 4, DualSense
-            - Switch (2) Pro Controller
+                - Other XInput controlllers
+            - DualShock 3 (SDL supports it, but I couldn't get it to work), DualShock 4, DualSense
+            - Switch (2) Pro Controller, Switch (2) Joy-Cons (only as a pair)
+                - Controllers that act like one, such as 8BitDo controllers in Switch mode
+
+
+## FAQ
+- When will this be finished?
+    - I don't know
+- Is there a release I can download?
+    - It isn't even a game yet, so no
