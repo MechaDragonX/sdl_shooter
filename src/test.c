@@ -57,7 +57,7 @@ void setGameController(SDL_GameController** controller)
 
 
 // Params: Pointer to distance as 2D vector
-// Use keyboard controls to get raw distance vector before finalization
+// Use keyboard controls to get raw distance vector before normalization
 // Returns: void
 void getRawDistanceKeyboard(Vector2* distance)
 {
@@ -76,7 +76,7 @@ void getRawDistanceKeyboard(Vector2* distance)
 }
 
 // Params: Pointer to pointer to SDL_GameController, Pointer to distance as 2D vector
-// Use game controller controls to get raw distance vector before finalization
+// Use game controller controls to get raw distance vector before normalization
 // Returns: void
 void getRawDistanceController(SDL_GameController** controller, Vector2* distance)
 {
@@ -91,6 +91,9 @@ void getRawDistanceController(SDL_GameController** controller, Vector2* distance
         distance->x += 1;
 }
 
+// Params: Pointer to pointer to SDL_GameController
+// Check for controller and use either keyboard or controller to get raw distance vector before normalization
+// Returns: Vector2 distance
 Vector2 getRawDistance(SDL_GameController** controller)
 {
     Vector2 distance = {0, 0};
@@ -110,9 +113,11 @@ Vector2 getRawDistance(SDL_GameController** controller)
     return distance;
 }
 
+// Params: Vector2 distance
+// Normalize vectors so diagonal is at same speed as cardinal
+// Returns: void
 void normalizeDistance(Vector2* distance)
 {
-    // Normalize vectors so diagonal is at same speed as cardinal
     float normalized_diagonal = sqrtf((distance->x * distance->x) + (distance->y * distance->y));
     if(normalized_diagonal != 0)
     {
@@ -176,7 +181,7 @@ int main(int argc, char* argv[])
                 looping = 0;
         }
 
-        // Calculate raw distance
+        // Calculate raw distance from keyboard or controller movement
         Vector2 distance = getRawDistance(&controller);
         // Normalize vectors so diagonal is at same speed as cardinal
         normalizeDistance(&distance);
