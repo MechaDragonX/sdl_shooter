@@ -148,18 +148,7 @@ int main(int argc, char* argv[])
         updateEntityPosition(&player, &distance);
 
         // Handle Bounds
-        // Left
-        if(player.rectangle.x + player.rectangle.w > WINDOW_WIDTH)
-            player.rectangle.x = WINDOW_WIDTH - player.rectangle.w;
-        // Right
-        if(player.rectangle.x < 0)
-            player.rectangle.x = 0;
-        // Top
-        if(player.rectangle.y < 0)
-            player.rectangle.y = 0;
-        // Bottom
-        if(player.rectangle.y + player.rectangle.h > WINDOW_HEIGHT)
-            player.rectangle.y = WINDOW_HEIGHT - player.rectangle.h;
+        normalizeEntityPositionBounds(&player);
 
         // Clear Screen
         SDL_RenderClear(renderer);

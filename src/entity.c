@@ -24,6 +24,9 @@ void setInitialEntityPosition(Entity* entity)
     entity->rectangle.y = (WINDOW_HEIGHT - entity->rectangle.h) / 2;
 }
 
+// Params: path string, pointer to SDL_Renderer, Vector2 position, Vector2 speed
+// Create tecture, set texture to entity rectangle, set intitla position
+// Returns Entity
 Entity setupEntity(const char* path, SDL_Renderer* renderer, Vector2 position, Vector2 speed)
 {
     Entity entity =
@@ -47,4 +50,23 @@ void updateEntityPosition(Entity* entity, Vector2* distance)
 {
     entity->rectangle.x += distance->x * entity->speed.x / FRAME_CAP;
     entity->rectangle.y += distance->y * entity->speed.y / FRAME_CAP;
+}
+
+// Params: Poitner to Entity
+// Make sure entity position is within window bounds
+// Returns: void
+void normalizeEntityPositionBounds(Entity* entity)
+{
+    // Left
+    if(entity->rectangle.x + entity->rectangle.w > WINDOW_WIDTH)
+        entity->rectangle.x = WINDOW_WIDTH - entity->rectangle.w;
+    // Right
+    if(entity->rectangle.x < 0)
+        entity->rectangle.x = 0;
+    // Top
+    if(entity->rectangle.y < 0)
+        entity->rectangle.y = 0;
+    // Bottom
+    if(entity->rectangle.y + entity->rectangle.h > WINDOW_HEIGHT)
+        entity->rectangle.y = WINDOW_HEIGHT - entity->rectangle.h;
 }
