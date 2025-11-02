@@ -3,11 +3,14 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
 
+// === MACROS ===
 // Window dimensions
 #define WINDOW_WIDTH 500
 #define WINDOW_HEIGHT 500
 #define FRAME_CAP 60
 
+
+// === STRUCTS ===
 typedef struct
 {
     float x;
@@ -22,7 +25,11 @@ typedef struct
     Vector2 speed;
 } Entity;
 
+
+// === FUNCTIONS ===
+// Prams: path to image, pointer to SDL_Renderer
 // Create surface, load image to surface, create texture, free surface
+// Returns: Pointer to SDL_Texture
 SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer)
 {
     SDL_Surface* surface = IMG_Load(path);
@@ -32,7 +39,9 @@ SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer)
     return texture;
 }
 
+// Params: Pointer to SDL_GameController
 // Set up game controller
+// Returns: void
 void setGameController(SDL_GameController** controller)
 {
     if(SDL_NumJoysticks() > 0)
@@ -46,6 +55,8 @@ void setGameController(SDL_GameController** controller)
     }
 }
 
+
+// === Main Function ===
 int main(int argc, char* argv[])
 {
     // Return zero for success and vice versa
@@ -86,6 +97,7 @@ int main(int argc, char* argv[])
     // Array of keys with their states
     const Uint8* key_states;
 
+    // Raw distance
     Vector2 distance = {0, 0};
     // Final distance
     float final_distance = 0;
