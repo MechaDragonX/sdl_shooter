@@ -61,6 +61,23 @@ void getRawDistanceController(SDL_GameController** controller, Vector2* distance
 }
 
 // Params: Pointer to pointer to SDL_GameController
+// Return whether the DPad is being pressed or not
+// Returns: int 1 for true, 0 for false
+int getDPadState(SDL_GameController** controller)
+{
+    if
+    (
+        SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
+        SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
+        SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
+        SDL_GameControllerGetButton(* controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
+    )
+        return 1;
+    else
+        return 0;
+}
+
+// Params: Pointer to pointer to SDL_GameController
 // Check for controller and use either keyboard or controller to get raw distance vector before normalization
 // Returns: Vector2 distance
 Vector2 getRawDistance(SDL_GameController** controller)
@@ -76,7 +93,9 @@ Vector2 getRawDistance(SDL_GameController** controller)
     else
     {
         // Otherwise handle controller input
-        getRawDistanceController(controller, &distance);
+        // Make sure math is only done if the DPad is being pressed
+        if(getDPadState(controller))
+            getRawDistanceController(controller, &distance);
     }
 
     return distance;
