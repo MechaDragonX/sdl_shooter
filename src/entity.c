@@ -24,18 +24,36 @@ void setInitialEntityPosition(Entity* entity)
     entity->rectangle.y = (WINDOW_HEIGHT - entity->rectangle.h) / 2;
 }
 
-// Params: path string, pointer to SDL_Renderer, Vector2 position, Vector2 speed
-// Create tecture, set texture to entity rectangle, set intitla position
-// Returns Entity
-Entity setupEntity(const char* path, SDL_Renderer* renderer, Vector2 position, Vector2 speed)
+// Params: int whether next param is path string (0) or SDL_Texture (1), pointer to SDL_Renderer, Vector2 position, Vector2 speed
+// Create texture if needed, set texture to entity rectangle, set intitla position
+// Returns: Entity
+Entity setupEntity(int pathOrTexture, void* textureInfo, SDL_Renderer* renderer, Vector2 position, Vector2 speed)
 {
-    Entity entity =
+    Entity entity = {};
+    if(pathOrTexture == 0)
     {
-        createTexture(path, renderer),
-        {},
-        {0, 0},
-        {300, 300}
-    };
+        (const char*)textureInfo;
+        entity = (Entity)
+        {
+            createTexture(textureInfo, renderer),
+            {},
+            {0, 0},
+            {300, 300}
+        };
+    }
+    else if(pathOrTexture == 1)
+    {
+        (SDL_Texture*)textureInfo;
+        entity = (Entity)
+        {
+            textureInfo,
+            {},
+            {0, 0},
+            {300, 300}
+        };
+    }
+
+
     SDL_QueryTexture(entity.texture, NULL, NULL, &entity.rectangle.w, &entity.rectangle.h);
 
     setInitialEntityPosition(&entity);

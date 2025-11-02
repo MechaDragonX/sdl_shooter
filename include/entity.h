@@ -16,7 +16,7 @@ typedef struct
 // Function protypes
 SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer);
 void setInitialEntityPosition(Entity* entity);
-Entity setupEntity(const char* path, SDL_Renderer* renderer, Vector2 position, Vector2 speed);
+Entity setupEntity(int pathOrTexture, void* textureInfo, SDL_Renderer* renderer, Vector2 position, Vector2 speed);
 void updateEntityPosition(Entity* entity, Vector2* distance);
 void normalizeEntityPositionBounds(Entity* entity);
 

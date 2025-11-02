@@ -110,6 +110,7 @@ int main(int argc, char* argv[])
 
     Entity player = setupEntity
     (
+        0,
         "assets/jack.png",
         renderer,
         (Vector2){0, 0},
