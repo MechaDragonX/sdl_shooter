@@ -3,13 +3,14 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
 #include "macros.h"
+#include "vector2.h"
 
 // === STRUCTS ===
-typedef struct
-{
-    float x;
-    float y;
-} Vector2;
+// typedef struct
+// {
+//     float x;
+//     float y;
+// } Vector2;
 
 typedef struct
 {
