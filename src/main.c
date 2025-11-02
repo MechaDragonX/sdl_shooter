@@ -8,18 +8,6 @@
 
 
 // === FUNCTIONS ===
-// Prams: path to image, pointer to SDL_Renderer
-// Create surface, load image to surface, create texture, free surface
-// Returns: Pointer to SDL_Texture
-SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer)
-{
-    SDL_Surface* surface = IMG_Load(path);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-
-    return texture;
-}
-
 // Params: Pointer to pointer to SDL_GameController
 // Set up game controller
 // Returns: void
@@ -133,18 +121,7 @@ int main(int argc, char* argv[])
     // Create renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
 
-    Entity player =
-    {
-        createTexture("assets/jack.png", renderer),
-        {},
-        {0, 0},
-        {300, 300}
-    };
-    SDL_QueryTexture(player.texture, NULL, NULL, &player.rectangle.w, &player.rectangle.h);
-
-    // Set initial x and y position of sprite
-    player.rectangle.x = (WINDOW_WIDTH - player.rectangle.w) / 2;
-    player.rectangle.y = (WINDOW_HEIGHT - player.rectangle.h) / 2;
+    Entity player = setupEntity("assets/jack.png", renderer, (Vector2){0, 0}, (Vector2){300, 300});
 
     // Set up game controller
     SDL_GameController* controller;
@@ -168,8 +145,7 @@ int main(int argc, char* argv[])
         normalizeDistance(&distance);
 
         // Set new sprite position
-        player.rectangle.x += distance.x * player.speed.x / FRAME_CAP;
-        player.rectangle.y += distance.y * player.speed.y / FRAME_CAP;
+        updateEntityPosition(&player, &distance);
 
         // Handle Bounds
         // Left
