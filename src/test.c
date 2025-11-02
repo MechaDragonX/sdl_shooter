@@ -57,16 +57,16 @@ void setGameController(SDL_GameController** controller)
 void getRawDistanceKeyboard(Vector2* distance)
 {
     // Get array of keys with their states
-    const Uint8* key_states = SDL_GetKeyboardState(NULL);
+    const Uint8* keyStates = SDL_GetKeyboardState(NULL);
 
     // Assign vector values based on keys pressed
-    if(key_states[SDL_SCANCODE_W] || key_states[SDL_SCANCODE_UP])
+    if(keyStates[SDL_SCANCODE_W] || keyStates[SDL_SCANCODE_UP])
         distance->y -= 1;
-    if(key_states[SDL_SCANCODE_S] || key_states[SDL_SCANCODE_DOWN])
+    if(keyStates[SDL_SCANCODE_S] || keyStates[SDL_SCANCODE_DOWN])
         distance->y += 1;
-    if(key_states[SDL_SCANCODE_A] || key_states[SDL_SCANCODE_LEFT])
+    if(keyStates[SDL_SCANCODE_A] || keyStates[SDL_SCANCODE_LEFT])
         distance->x -= 1;
-    if(key_states[SDL_SCANCODE_D] || key_states[SDL_SCANCODE_RIGHT])
+    if(keyStates[SDL_SCANCODE_D] || keyStates[SDL_SCANCODE_RIGHT])
         distance->x += 1;
 }
 
@@ -113,11 +113,11 @@ Vector2 getRawDistance(SDL_GameController** controller)
 // Returns: void
 void normalizeDistance(Vector2* distance)
 {
-    float normalized_diagonal = sqrtf((distance->x * distance->x) + (distance->y * distance->y));
-    if(normalized_diagonal != 0)
+    float normalizedDiagonal = sqrtf((distance->x * distance->x) + (distance->y * distance->y));
+    if(normalizedDiagonal != 0)
     {
-        distance->x /= normalized_diagonal;
-        distance->y /= normalized_diagonal;
+        distance->x /= normalizedDiagonal;
+        distance->y /= normalizedDiagonal;
     }
 }
 
