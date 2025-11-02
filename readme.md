@@ -62,7 +62,7 @@
 - All you can do is move a sprite around
     - Keyboard: WASD and ↑↓←→
     - Controller: DPad
-        - Supported controllers: Most modern controlelrs including
+        - Supported controllers: Most modern controllers including
             - Xbox 360, One, Series X
             - DualShock 4, DualSense
             - Switch (2) Pro Controller
