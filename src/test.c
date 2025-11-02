@@ -8,6 +8,19 @@
 #define WINDOW_HEIGHT 500
 #define FRAME_CAP 60
 
+typedef struct
+{
+    float x;
+    float y;
+} Vector2;
+
+typedef struct
+{
+    SDL_Texture* texture;
+    SDL_Rect rectangle;
+    Vector2 position;
+    Vector2 speed;
+} Entity;
 
 // Create surface, load image to surface, create texture, free surface
 SDL_Texture* createTexture(const char* path, SDL_Renderer* renderer)
@@ -57,25 +70,25 @@ int main(int argc, char* argv[])
     // Create renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
 
-    SDL_Texture* texture = createTexture("assets/jack.png", renderer);
-    // Create a rectangle sprite to put the texture on
-    SDL_Rect sprite;
-    SDL_QueryTexture(texture, NULL, NULL, &sprite.w, &sprite.h);
+    Entity player =
+    {
+        createTexture("assets/jack.png", renderer),
+        {},
+        {0, 0},
+        {300, 300}
+    };
+    SDL_QueryTexture(player.texture, NULL, NULL, &player.rectangle.w, &player.rectangle.h);
 
     // Set initial x and y position of sprite
-    sprite.x = (WINDOW_WIDTH - sprite.w) / 2;
-    sprite.y = (WINDOW_HEIGHT - sprite.h) / 2;
-
-    // Movement speed
-    int speed = 300;
+    player.rectangle.x = (WINDOW_WIDTH - player.rectangle.w) / 2;
+    player.rectangle.y = (WINDOW_HEIGHT - player.rectangle.h) / 2;
 
     // Array of keys with their states
     const Uint8* key_states;
-    // x and y vectors of distance
-    float dx = 0;
-    float dy = 0;
+
+    Vector2 distance = {0, 0};
     // Final distance
-    float distance = 0;
+    float final_distance = 0;
 
     // Set up game controller
     SDL_GameController* controller;
@@ -94,8 +107,7 @@ int main(int argc, char* argv[])
         }
 
         // Reset vectors
-        dx = 0;
-        dy = 0;
+        distance = (Vector2){0, 0};
 
         // Check if there are no controllers
         if(SDL_NumJoysticks() == 0)
@@ -105,65 +117,65 @@ int main(int argc, char* argv[])
             key_states = SDL_GetKeyboardState(NULL);
             // Assign vector values based on keys pressed
             if(key_states[SDL_SCANCODE_W] || key_states[SDL_SCANCODE_UP])
-                dy -= 1;
+                distance.y -= 1;
             if(key_states[SDL_SCANCODE_S] || key_states[SDL_SCANCODE_DOWN])
-                dy += 1;
+                distance.y += 1;
             if(key_states[SDL_SCANCODE_A] || key_states[SDL_SCANCODE_LEFT])
-                dx -= 1;
+                distance.x -= 1;
             if(key_states[SDL_SCANCODE_D] || key_states[SDL_SCANCODE_RIGHT])
-                dx += 1;
+                distance.x += 1;
         }
         else
         {
             // Otherwise handle controller input
             // Assign vector values based on DPad directions pressed
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP))
-                dy -= 1;
+                distance.y -= 1;
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN))
-                dy += 1;
+                distance.y += 1;
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT))
-                dx -= 1;
+                distance.x -= 1;
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT))
-                dx += 1;
+                distance.x += 1;
         }
 
         // Normalize vectors so diagonal is at same speed as cardinal
-        distance = sqrtf((dx * dx) + (dy * dy));
-        if(distance != 0)
+        final_distance = sqrtf((distance.x * distance.x) + (distance.y * distance.y));
+        if(final_distance != 0)
         {
-            dx /= distance;
-            dy /= distance;
+            distance.x /= final_distance;
+            distance.y /= final_distance;
         }
 
         // Set new sprite position
-        sprite.x += dx * speed / FRAME_CAP;
-        sprite.y += dy * speed / FRAME_CAP;
+        player.rectangle.x += distance.x * player.speed.x / FRAME_CAP;
+        player.rectangle.y += distance.y * player.speed.y / FRAME_CAP;
 
         // Handle Bounds
         // Left
-        if(sprite.x + sprite.w > WINDOW_WIDTH)
-            sprite.x = WINDOW_WIDTH - sprite.w;
+        if(player.rectangle.x + player.rectangle.w > WINDOW_WIDTH)
+            player.rectangle.x = WINDOW_WIDTH - player.rectangle.w;
         // Right
-        if(sprite.x < 0)
-            sprite.x = 0;
+        if(player.rectangle.x < 0)
+            player.rectangle.x = 0;
         // Top
-        if(sprite.y < 0)
-            sprite.y = 0;
+        if(player.rectangle.y < 0)
+            player.rectangle.y = 0;
         // Bottom
-        if(sprite.y + sprite.h > WINDOW_HEIGHT)
-            sprite.y = WINDOW_HEIGHT - sprite.h;
+        if(player.rectangle.y + player.rectangle.h > WINDOW_HEIGHT)
+            player.rectangle.y = WINDOW_HEIGHT - player.rectangle.h;
 
         // Clear Screen
         SDL_RenderClear(renderer);
         // Render sprite
-        SDL_RenderCopy(renderer, texture, NULL, &sprite);
+        SDL_RenderCopy(renderer, player.texture, NULL, &player.rectangle);
         SDL_RenderPresent(renderer);
         // Handle framerate
         SDL_Delay(1000 / FRAME_CAP);
     }
 
     // Destroy everything!!
-    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(player.texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
