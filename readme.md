@@ -37,10 +37,13 @@
         - Homebrew: `sdl2_image`
 #### Information
 - Uses GCC compiler on all platforms
-- **Untested on macOS**
-- **Untested on ARM (AArch64)**
+    - If `gcc`is an alias to `clang` on your macOS system, it'll use that
 
 ### Compilation Instructions
+0. If you're on Nix / Nix OS:
+   ```
+   nix develop
+   ```
 1. ```
    make setup
    ```
@@ -56,7 +59,6 @@
    ./bin/shooter.exe
    ```
    Naturally doubleclicking the executable now should work too (assuming permissions are in order).
-
 ### Other Commands
 - ```
   make clean
